@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aero-Focus OS | Enterprise Deep Work v2.0</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-mesh: 
+                radial-gradient(at 20% 30%, hsla(253,16%,7%,0.8) 0, transparent 50%), 
+                radial-gradient(at 80% 80%, hsla(225,39%,20%,0.6) 0, transparent 50%), 
+                radial-gradient(at 40% 10%, hsla(339,49%,25%,0.4) 0, transparent 50%);
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-thick: rgba(255, 255, 255, 0.09);
+            --glass-glow: rgba(255, 255, 255, 0.15);
+            --border: rgba(255, 255, 255, 0.12);
+            --border-glow: rgba(10, 132, 255, 0.3);
+            --accent: #0A84FF;
+            --accent-glow: #0A84FF;
+            --success: #30D158;
+            --warning: #FF9500;
+            --danger: #FF453A;
+            --purple: #AF52DE;
+            --text-primary: rgba(255,255,255,0.95);
+            --text-secondary: rgba(255,255,255,0.7);
+            --text-muted: rgba(255,255,255,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #000; 
+            background-image: var(--bg-mesh);
+            color: var(--text-primary);
+            min-height: 100vh; 
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            position: relative;
+        }
+
+        /* Animated Particle Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* BENTO BOX SYSTEM - Enhanced */
+        .bento-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: auto auto auto auto;
+            gap: 24px;
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .panel {
+            background: var(--glass);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+        }
+
+        .panel:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            background: var(--glass-thick);
+            box-shadow: 0 32px 64px rgba(0,0,0,0.3), 0 0 0 1px var(--border-glow);
+        }
+
+        /* HEADER PANEL */
+        .header-panel { 
+            grid-column: span 12; 
+            grid-row: 1;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 20px 40px;
+            border-radius: 32px;
+        }
+
+        .brand { 
+            font-weight: 800; 
+            font-size: 28px;
+            letter-spacing: -1px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .live-clock { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 20px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        /* MAIN TIMER PANEL - Enhanced */
+        .timer-panel { 
+            grid-column: span 5; 
+            grid-row: span 3;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center;
+            position: relative;
+        }
+
+        .timer-status {
+            font-size: 14px; 
+            letter-spacing: 3px; 
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        #time-display { 
+            font-size: 120px; 
+            font-weight: 800; 
+            letter-spacing: -8px; 
+            line-height: 1; 
+            margin: 24px 0; 
+            background: linear-gradient(135deg, var(--accent), #5EB1FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        #time-display::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.5); }
+        }
+
+        /* BIOMETRIC GAUGE - Enhanced */
+        .gauge-container { 
+            width: 280px; 
+            height: 16px; 
+            background: rgba(255,255,255,0.08); 
+            border-radius: 24px; 
+            overflow: hidden; 
+            margin: 24px 0;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        #gauge-fill { 
+            height: 100%; 
+            border-radius: 24px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* CONTROLS */
+        .timer-controls {
+            display: flex; 
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn { 
+            padding: 14px 28px; 
+            border-radius: 16px; 
+            border: none; 
+            font-weight: 600; 
+            font-size: 14px;
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before { left: 100%; }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--accent), #5EB1FF); 
+            color: white;
+            box-shadow: 0 8px 24px rgba(10,132,255,0.3);
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(10,132,255,0.4); }
+
+        .btn-secondary { 
+            background: rgba(255,255,255,0.1); 
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-danger { 
+            background: rgba(255, 69, 58, 0.15); 
+            color: var(--danger); 
+            border: 1px solid rgba(255,69,58,0.3);
+            font-weight: 700;
+        }
+
+        .btn-success { 
+            background: rgba(48, 209, 88, 0.2); 
+            color: var(--success); 
+            border: 1px solid rgba(48,209,88,0.4);
+        }
+
+        /* SOUND MIXER PANEL - Enhanced */
+        .mixer-panel { 
+            grid-column: span 3; 
+            grid-row: span 2;
+        }
+
+        .mixer-title {
+            font-size: 16px; 
+            letter-spacing: 1px; 
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+        }
+
+        .mixer-row { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 20px;
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+        }
+
+        input[type="range"] { 
+            flex-grow: 1; 
+            accent-color: var(--accent);
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        .mixer-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            min-width: 36px;
+            color: var(--accent);
+        }
+
+        /* HEATMAP PANEL - Enhanced */
+        .analytics-panel { 
+            grid-column: span 4; 
+            grid-row: span 2;
+        }
+
+        .heatmap { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 6px; 
+            margin: 20px 0;
+        }
+
+        .day-cell { 
+            aspect-ratio: 1; 
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .day-cell:hover {
+            transform: scale(1.2);
+            z-index: 20;
+        }
+
+        .intensity-0 { background: rgba(255,255,255,0.05); }
+        .intensity-1 { background: #00458a; box-shadow: 0 0 8px #00458a; }
+        .intensity-2 { background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+        .intensity-3 { background: var(--success); box-shadow: 0 0 16px var(--success); animation: glow 2s infinite; }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 16px var(--success); }
+            50% { box-shadow: 0 0 24px var(--success); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+        }
+
+        /* TASK PANEL - Enhanced */
+        .task-panel { 
+            grid-column: span 12; 
+            grid-row: 4;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .task-input { 
+            display: flex; 
+            gap: 12px; 
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        input[type="text"], select {
+            flex-grow: 1; 
+            background: rgba(255,255,255,0.06); 
+            border: 1px solid var(--border); 
+            padding: 14px 16px; 
+            border-radius: 16px; 
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        input[type="text"]::placeholder { color: var(--text-muted); }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(10,132,255,0.1);
+        }
+
+        .task-list { 
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .task-item { 
+            padding: 16px;
+            background: rgba(255,255,255,0.03); 
+            border-radius: 16px; 
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .task-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(4px);
+        }
+
+        .task-item.priority-high { border-left-color: var(--danger); }
+        .task-item.priority-medium { border-left-color: var(--warning); }
+        .task-item.priority-low { border-left-color: var(--success); }
+        .task-item.completed { 
+            opacity: 0.6;
+            text-decoration: line-through;
+            border-left-color: var(--success);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* NOTIFICATIONS */
+        .notification {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            padding: 20px 24px;
+            border-radius: 20px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            max-width: 400px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.3);
+        }
+
+        .notification.show { transform: translateX(0); }
+
+        .notification.success { background: rgba(48,209,88,0.2); border: 1px solid var(--success); color: var(--success); }
+        .notification.warning { background: rgba(255,149,0,0.2); border: 1px solid var(--warning); color: var(--warning); }
+        .notification.danger { background: rgba(255,69,58,0.2); border: 1px solid var(--danger); color: var(--danger); }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .bento-container { grid-template-columns: repeat(8, 1fr); padding: 20px; }
+            #time-display { font-size: 80px; }
+        }
+
+        @media (max-width: 768px) {
+            .bento-container { 
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                gap: 16px;
+                padding: 16px;
+            }
+            .header-panel { flex-direction: column; gap: 16px; text-align: center; }
+            #time-display { font-size: 64px; }
+        }
+
+        /* SCROLLBAR */
+        .task-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <canvas class="particles" id="particles"></canvas>
+
+    <div class="bento-container">
+        <!-- Header -->
+        <header class="panel header-panel">
+            <div class="brand">
+                <i class="fas fa-rocket"></i> 
+                AERO-FOCUS OS v2.0
+            </div>
+            <div class="status-bar">
+                <div class="live-clock" id="clock">00:00:00</div>
+                <div class="user-info">
+                    <i class="fas fa-user-astronaut"></i>
+                    <span id="user-display">Commander</span> | 
+                    LVL <span id="lvl-display">1</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Timer -->
+        <section class="panel timer-panel">
+            <div class="timer-status">
+                COGNITIVE STATE: <span id="state-label">NOMINAL</span>
+            </div>
+            <div id="time-display">25:00</div>
+            <div class="gauge-container">
+                <div id="gauge-fill"></div>
+            </div>
+            <div class="gauge-labels">
+                <span>FLOW</span>
+                <span id="energy-display">100%</span>
+            </div>
+            <div class="timer-controls">
+                <button class="btn btn-primary" id="start-btn">
+                    <i class="fas fa-play"></i> INITIALIZE FLOW
+                </button>
+                <button class="btn btn-secondary" id="pause-btn" style="display: none;">
+                    <i class="fas fa-pause"></i> SUSPEND
+                </button>
+                <button class="btn btn-danger" id="reset-btn">
+                    <i class="fas fa-redo"></i> REBOOT
+                </button>
+                <select id="session-type">
+                    <option value="1500">25m Focus</option>
+                    <option value="300">5m Break</option>
+                    <option value="900">15m Break</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Neural Mixer -->
+        <section class="panel mixer-panel">
+            <div class="mixer-title">
+                <i class="fas fa-brain"></i> NEURAL MIXER
+            </div>
+            <div class="mixer-row">
+                <i class="fas fa-cloud-rain"></i>
+                <span>Rain</span>
+                <input type="range" min="0" max="100" value="0" id="rain-slider">
+                <span class="mixer-value" id="rain-value">0%</span>
+            </div>
+            <div class="mixer-row">
+                <i class="fas fa-wind"></i>
+                <span>Noise</span>
+                <input type="range" min="0" max="100" value="0" id="noise-slider">
+                <span class="mixer-value" id="noise-value">0%</span>
+            </div>
+            <div class="mixer-row">
+                <i class="fas fa-music"></i>
+                <span>Ambient</span>
+                <input type="range" min="0" max="100" value="0" id="ambient-slider">
+                <span class="mixer-value" id="ambient-value">0%</span>
+            </div>
+        </section>
+
+        <!-- Analytics Heatmap -->
+        <section class="panel analytics-panel">
+            <div class="mixer-title">
+                <i class="fas fa-chart-heatmap"></i> FLOW HISTORY
+            </div>
+            <div class="heatmap" id="heatmap"></div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div style="font-size: 24px; font-weight: 700; color: var(--accent);" id="score-display">0</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">FOCUS SCORE</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 24px; font-weight: 700; color: var(--success);" id="streak-display">0</div>
+                    <div style="font-size: 12px; color: var(--text-muted);">STREAK</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Task Manager -->
+        <section class="panel task-panel">
+            <div class="task-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-tasks"></i>
+                    <h3 style="font-size: 18px; font-weight: 700;">PRIORITY STACK</h3>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted);" id="task-stats">0/0 tasks</div>
+            </div>
+            <div class="task-input">
+                <input type="text" id="task-input" placeholder="Define mission objective...">
+                <select id="task-priority">
+                    <option value="high">🔴 High</option>
+                    <option value="medium">🟡 Medium</option>
+                    <option value="low">🟢 Low</option>
+                </select>
+                <button class="btn btn-primary" id="add-task-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <ul class="task-list" id="task-list"></ul>
+        </section>
+    </div>
+
+    <script>
+        // ==========================================
+        // ENHANCED STATE MANAGEMENT
+        // ==========================================
+        class AeroFocusOS {
+            constructor() {
+                this.session = {
+                    isRunning: false,
+                    isPaused: false,
+                    timeLeft: 25 * 60,
+                    energy: 100,
+                    score: 0,
+                    level: 1,
+                    streak: 0,
+                    tasks: [],
+                    user: '',
+                    pass: '',
+                    heatmap: Array(28).fill(0),
+                    achievements: [],
+                    notifications: []
+                };
+                
+                this.sounds = {};
+                this.ticker = null;
+                this.particles = null;
+                this.init();
+            }
+
+            init() {
+                this.loadData();
+                this.setupSounds();
+                this.createParticles();
+                this.renderUI();
+                this.bindEvents();
+                setInterval(() => this.updateClock(), 1000);
+                this.updateHeatmap();
+            }
+
+            loadData() {
+                const saved = localStorage.getItem('aero_os_v2');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    const pass = prompt(`Welcome back, ${data.user}. Enter Passcode:`);
+                    if (pass === data.pass) {
+                        this.session = { ...this.session, ...data };
+                    } else {
+                        this.newUser();
+                    }
+                } else {
+                    this.newUser();
+                }
+            }
+
+            newUser() {
+                this.session.user = prompt("Commander, define your alias:");
+                this.session.pass = prompt("Set security passcode:");
+                localStorage.setItem('aero_os_v2', JSON.stringify(this.session));
+            }
+
+            saveData() {
+                localStorage.setItem('aero_os_v2', JSON.stringify(this.session));
+            }
+
+            // ==========================================
+            // AUDIO ENGINE
+            // ==========================================
+            setupSounds() {
+                const soundConfigs = {
+                    rain: { src: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAo', loop: true },
+                    noise: { src: 'data:audio/wav;base64,UklGRl9vAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAo', loop: true },
+                    ambient: { src: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAo', loop: true }
+                };
+
+                Object.entries(soundConfigs).forEach(([key, config]) => {
+                    this.sounds[key] = new Audio(config.src);
+                    this.sounds[key].loop = config.loop;
+                    this.sounds[key].volume = 0;
+                    this.sounds[key].preload = 'auto';
+                });
+            }
+
+            updateMixer(type, value) {
+                const slider = document.getElementById(`${type}-slider`);
+                const display = document.getElementById(`${type}-value`);
+                const vol = value / 100;
+                
+                this.sounds[type].volume = vol;
+                display.textContent = `${Math.round(value)}%`;
+                
+                if (vol > 0 && this.sounds[type].paused) {
+                    this.sounds[type].play().catch(() => {});
+                }
+            }
+
+            // ==========================================
+            // PARTICLE SYSTEM
+            // ==========================================
+            createParticles() {
+                const canvas = document.getElementById('particles');
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                });
+
+                const particles = [];
+                for (let i = 0; i < 100; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        size: Math.random() * 2 + 0.5,
+                        opacity: Math.random() * 0.5 + 0.2
+                    });
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        
+                        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                        
+                        ctx.save();
+                        ctx.globalAlpha = p.opacity;
+                        ctx.fillStyle = 'rgba(10, 132, 255, 0.3)';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                    
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            // ==========================================
+            // SESSION ENGINE
+            // ==========================================
+            toggleSession() {
+                if (this.session.tasks.length === 0) {
+                    this.notify('CRITICAL: Define mission objectives first!', 'danger');
+                    return;
+                }
+
+                if (!this.session.isRunning) {
+                    this.startSession();
+                } else {
+                    this.pauseSession();
+                }
+            }
+
+            startSession() {
+                this.session.isRunning = true;
+                this.session.isPaused = false;
+                this.session.timeLeft = parseInt(document.getElementById('session-type').value);
+                
+                document.getElementById('start-btn').style.display = 'none';
+                document.getElementById('pause-btn').style.display = 'flex';
+                
+                this.ticker = setInterval(() => {
+                    if (!this.session.isPaused && this.session.timeLeft > 0) {
+                        this.session.timeLeft--;
+                        this.session.energy = Math.max(0, this.session.energy - 0.08);
+                        this.updateTimerDisplay();
+                        this.updateGauge();
+                        
+                        if (this.session.energy < 20) {
+                            document.getElementById('state-label').textContent = 'CRITICAL FATIGUE';
+                        }
+                    } else if (this.session.timeLeft <= 0) {
+                        this.completeSession();
+                    }
+                }, 1000);
+
+                this.notify('🛰️ FLOW STATE ACTIVATED', 'success');
+            }
+
+            pauseSession() {
+                this.session.isPaused = !this.session.isPaused;
+                const btn = document.getElementById('pause-btn');
+                btn.innerHTML = this.session.isPaused ? 
+                    '<i class="fas fa-play"></i> RESUME' : 
+                    '<i class="fas fa-pause"></i> PAUSE';
+            }
+
+            completeSession() {
+                clearInterval(this.ticker);
+                this.session.isRunning = false;
+                this.session.score += Math.floor(this.session.energy * 10);
+                this.session.streak++;
+                this.session.energy = 100;
+                this.session.level = Math.floor(this.session.score / 1000) + 1;
+                
+                document.getElementById('start-btn').style.display = 'flex';
+                document.getElementById('pause-btn').style.display = 'none';
+                document.getElementById('pause-btn').innerHTML = '<i class="fas fa-pause"></i> SUSPEND';
+                
+                this.updateHeatmap();
+                this.renderUI();
+                this.notify(`🎉 SESSION COMPLETE! +${Math.floor(this.session.energy * 10)} points`, 'success');
+            }
+
+            resetSession() {
+                clearInterval(this.ticker);
+                this.session.isRunning = false;
+                this.session.isPaused = false;
+                this.session.timeLeft = 25 * 60;
+                this.session.energy = 100;
+                
+                document.getElementById('start-btn').style.display = 'flex';
+                document.getElementById('pause-btn').style.display = 'none';
+                
+                this.updateTimerDisplay();
+                this.updateGauge();
+                this.notify('🔄 System Rebooted', 'warning');
+            }
+
+            // ==========================================
+            // UI UPDATES
+            // ==========================================
+            updateTimerDisplay() {
+                const m = Math.floor(this.session.timeLeft / 60);
+                const s = this.session.timeLeft % 60;
+                document.getElementById('time-display').textContent = 
+                    `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }
+
+            updateGauge() {
+                const fill = document.getElementById('gauge-fill');
+                const energyDisplay = document.getElementById('energy-display');
+                
+                fill.style.width = `${this.session.energy}%`;
+                energyDisplay.textContent = `${Math.round(this.session.energy)}%`;
+                
+                if (this.session.energy > 70) {
+                    fill.style.background = 'linear-gradient(90deg, var(--success), #34C759)';
+                    document.getElementById('state-label').textContent = 'OPTIMAL FLOW';
+                } else if (this.session.energy > 30) {
+                    fill.style.background = 'linear-gradient(90deg, var(--warning), #FF9500)';
+                    document.getElementById('state-label').textContent = 'SUSTAINABLE';
+                } else {
+                    fill.style.background = 'linear-gradient(90deg, var(--danger), #FF453A)';
+                    document.getElementById('state-label').textContent = 'CRITICAL FATIGUE';
+                }
+            }
+
+            updateHeatmap() {
+                const todayIntensity = Math.min(3, Math.floor(this.session.streak / 3));
+                this.session.heatmap.unshift(todayIntensity);
+                this.session.heatmap.pop();
+                
+                const cells = document.querySelectorAll('.day-cell');
+                cells.forEach((cell, i) => {
+                    cell.className = `day-cell intensity-${this.session.heatmap[i]}`;
+                });
+            }
+
+            updateClock() {
+                document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+            }
+
+            renderUI() {
+                document.getElementById('lvl-display').textContent = this.session.level;
+                document.getElementById('score-display').textContent = this.session.score.toLocaleString();
+                document.getElementById('streak-display').textContent = this.session.streak;
+                document.getElementById('user-display').textContent = this.session.user;
+                
+                const taskStats = document.getElementById('task-stats');
+                const completed = this.session.tasks.filter(t => t.completed).length;
+                taskStats.textContent = `${completed}/${this.session.tasks.length} tasks`;
+                
+                this.renderTasks();
+                this.saveData();
+            }
+
+            renderTasks() {
+                const list = document.getElementById('task-list');
+                list.innerHTML = '';
+                
+                this.session.tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.className = `task-item priority-${task.priority} ${task.completed ? 'completed' : ''}`;
+                    li.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 8px; flex-grow: 1;">
+                            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="aeroOS.toggleTask(${task.id})">
+                            <span>${task.text}</span>
+                        </div>
+                        <div class="task-actions">
+                            <i class="fas fa-edit" style="cursor: pointer; color: var(--accent);" onclick="aeroOS.editTask(${task.id})"></i>
+                            <i class="fas fa-trash" style="cursor: pointer; color: var(--danger);" onclick="aeroOS.removeTask(${task.id})"></i>
+                        </div>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+
+            // ==========================================
+            // TASK MANAGEMENT
+            // ==========================================
+            addTask() {
+                const input = document.getElementById('task-input');
+                const priority = document.getElementById('task-priority').value;
+                
+                if (!input.value.trim()) return;
+                
+                this.session.tasks.unshift({
+                    id: Date.now(),
+                    text: input.value.trim(),
+                    priority,
+                    completed: false,
+                    created: new Date().toISOString()
+                });
+                
+                input.value = '';
+                this.renderUI();
+                this.notify('✅ Mission objective added', 'success');
+            }
+
+            toggleTask(id) {
+                const task = this.session.tasks.find(t => t.id === id);
+                if (task) {
+                    task.completed = !task.completed;
+                    this.renderUI();
+                }
+            }
+
+            removeTask(id) {
+                this.session.tasks = this.session.tasks.filter(t => t.id !== id);
+                this.renderUI();
+            }
+
+            editTask(id) {
+                const task = this.session.tasks.find(t => t.id === id);
+                const newText = prompt('Edit task:', task.text);
+                if (newText && newText.trim()) {
+                    task.text = newText.trim();
+                    this.renderUI();
+                }
+            }
+
+            // ==========================================
+            // NOTIFICATIONS
+            // ==========================================
+            notify(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => notification.classList.add('show'), 100);
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 400);
+                }, 4000);
+            }
+
+            // ==========================================
+            // EVENT BINDING
+            // ==========================================
+            bindEvents() {
+                document.getElementById('start-btn').onclick = () => this.toggleSession();
+                document.getElementById('pause-btn').onclick = () => this.pauseSession();
+                document.getElementById('reset-btn').onclick = () => this.resetSession();
+                document.getElementById('add-task-btn').onclick = () => this.addTask();
+                
+                document.getElementById('task-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.addTask();
+                });
+
+                // Sound sliders
+                ['rain', 'noise', 'ambient'].forEach(type => {
+                    document.getElementById(`${type}-slider`).oninput = (e) => 
+                        this.updateMixer(type, e.target.value);
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' && e.target === document.body) {
+                        e.preventDefault();
+                        this.toggleSession();
+                    }
+                    if (e.code === 'KeyR') this.resetSession();
+                    if (e.code === 'KeyN' && e.ctrlKey) this.addTask();
+                });
+            }
+        }
+
+        // Initialize Aero-Focus OS
+        const aeroOS = new AeroFocusOS();
+    </script>
+</body>
+</html>
